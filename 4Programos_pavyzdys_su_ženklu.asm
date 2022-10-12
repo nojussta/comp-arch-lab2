@@ -12,10 +12,10 @@ stekas  ENDS
 duom    SEGMENT 
 a	DW  2  ;   10000; perpildymo situacijai 
 b	DB -2
-c	DW 8
+c	DB 8
 x	DW -1,-2,-4,12,9,45,6
 kiek	= ($-x)/2
-y	DB kiek dup(0AAh)     
+y	DW kiek dup(0AAh)     
 isvb	DB 'x=',6 dup (?), ' y=',6 dup (?), 0Dh, 0Ah, '$'
 perp	DB 'Perpildymas', 0Dh, 0Ah, '$'
 daln	DB 'Dalyba is nulio', 0Dh, 0Ah, '$'
