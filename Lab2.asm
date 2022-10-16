@@ -1,9 +1,9 @@
 ;
-; suskaiciuoti     /   (b+c^2)/(x-b)    , kai x>b 
-;              y = |   7*a-x            , kai x=b
-;                  \   |c|+2*a          , kai x<b
+; suskaiciuoti     /   (a+2b)/(a-x)    , kai a-x > 0 
+;              y = |   a*a-3b            , kai a-x = b
+;                  \   |c+x|          , kai a-x < 0
 ; skaiciai su zenklu
-; Duomenys a - w, b - b, c - w, x - w, y - b  
+; Duomenys a - w, b - b, c - b, x - w, y - w  
 
 stekas  SEGMENT STACK
 	DB 256 DUP(0)
@@ -12,10 +12,10 @@ stekas  ENDS
 duom    SEGMENT 
 a	DW  2  ;   10000; perpildymo situacijai 
 b	DB -2
-c	DW 8
+c	DB 8
 x	DW -1,-2,-4,12,9,45,6
 kiek	= ($-x)/2
-y	DB kiek dup(0AAh)     
+y	DW kiek dup(0AAh)     
 isvb	DB 'x=',6 dup (?), ' y=',6 dup (?), 0Dh, 0Ah, '$'
 perp	DB 'Perpildymas', 0Dh, 0Ah, '$'
 daln	DB 'Dalyba is nulio', 0Dh, 0Ah, '$'
@@ -37,7 +37,8 @@ cikl:
 	CMP x[si], ax
 	JE f2
 	JL f3 
-f1:	MOV ax, c
+f1:	MOV al, c
+    CBW
 	IMUL c	; dx:ax=c^2
 	JO kl1  ; sandauga netilpo i ax 
 	XCHG ax, dx
@@ -63,7 +64,8 @@ f2:	MOV ax, 7
 f3:	MOV ax, 2
 	IMUL a
 	JO kl1  ; sandauga netilpo i ax 
-	MOV bx, c
+	MOV al, c
+	CBW
 	CMP bx, 0
 	JG mod       ; jei c < 0 keicia zenkla
 	NEG bx
@@ -78,7 +80,8 @@ re:
 teigr:  CMP ah, 0     ;jei teig. rezultatas
         JE ger	
 	JMP kl3
-ger:	MOV y[di], al
+ger:	
+    MOV y[di], ax
 	INC si
 	INC si
 	INC di
@@ -96,7 +99,7 @@ is_cikl:
 	MOV bx, offset isvb+2  
 	PUSH bx
 	CALL binasc
-	MOV al, y[di]
+	MOV ax, y[di]
 	CBW		; isvedamas skaicius y yra ax reg. 
 	PUSH ax
 	MOV bx, offset isvb+11 
@@ -196,5 +199,3 @@ vepab:
 binasc	ENDP    
 prog    ENDS 
         END pr
-
-
