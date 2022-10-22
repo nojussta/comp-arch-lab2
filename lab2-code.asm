@@ -43,3 +43,55 @@ f1: MOV ax, 2
 	CWD 
 	IDIV bx	; ax=rez
 	JMP re 
+
+; a*a-3b 
+f2:	MOV ax, 7
+	IMUL a
+	JO kl1  ; sandauga netilpo i ax 
+	SUB ax, x[si] ;7a-x
+	JO kl1
+	JMP re 
+
+f2:	MOV ax, a
+	IMUL a
+	JO kl1
+	;a*a
+	MOV ax, dx
+	MOV ax, 3
+	IMUL b
+	JO kl1
+	;3*b
+	SUB dx, ax
+	;dx-ax
+	JO kl1
+	JMP re
+
+; |c+x|
+f3:	MOV ax, 2
+	IMUL a
+	JO kl1  ; sandauga netilpo i ax 
+	MOV al, c
+	CBW
+	CMP bx, 0
+	JG mod       ; jei c < 0 keicia zenkla
+	NEG bx
+
+f3:	MOV ax, c
+	ADD x
+	JG mod       ; jei c < 0 keicia zenkla
+	NEG bx
+
+;a-x
+cikl:
+	MOV al, b
+	CBW   
+	CMP x[si], ax
+	JE f2
+	JL f3
+
+cikl:
+	MOV al, a
+	SUB al, x
+	CMP x[si], ax
+	JE f2
+	JL f3
