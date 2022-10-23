@@ -1,6 +1,6 @@
 ;
 ; suskaiciuoti     /   (a+2b)/(a-x)    , kai a-x > 0 
-;              y = |   a*a-3b            , kai a-x = b
+;              y = |   a*a-3b            , kai a-x = 0
 ;                  \   |c+x|          , kai a-x < 0
 ; skaiciai su zenklu
 ; Duomenys a - w, b - b, c - b, x - w, y - w  
@@ -10,8 +10,8 @@ stekas  SEGMENT STACK
 stekas  ENDS
 
 duom    SEGMENT 
-a	DW  2  ;   10000; perpildymo situacijai 
-b	DB 2
+a	DW  4  ;   10000; perpildymo situacijai 
+b	DB 3
 c	DB 8
 x	DW -1,-2,-4,12,9,45,6
 kiek	= ($-x)/2
@@ -72,12 +72,12 @@ f2:	MOV ax, a
 	;bx-ax
 	JO kl1
 	JMP re   
-f3: mov al, c
-    cbw
-    add ax, x[si]
-    jg mod
-    neg ax
-mod:	ADD ax, bx ;2a+|c|
+f3: MOV al, c
+    CBW
+    ADD ax, x[si]
+    JG mod
+    NEG ax
+mod:ADD ax, bx ;2a+|c|
 	JO kl1
 re:	
 	CMP al, 0
@@ -92,6 +92,7 @@ ger:
     MOV y[di], ax
 	INC si
 	INC si
+	INC di
 	INC di
 	LOOP cikl
 pab:	    
@@ -120,6 +121,7 @@ is_cikl:
 ;============================
 	INC si     
 	INC si
+	INC di
 	INC di
 	LOOP is_cikl
 is_pab:	
