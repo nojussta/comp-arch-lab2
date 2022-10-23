@@ -66,7 +66,7 @@ f2:	MOV ax, a
 	JO kl1
 	JMP re
 
-; |c+x|
+;|c|+2*a          
 f3:	MOV ax, 2
 	IMUL a
 	JO kl1  ; sandauga netilpo i ax 
@@ -75,11 +75,16 @@ f3:	MOV ax, 2
 	CMP bx, 0
 	JG mod       ; jei c < 0 keicia zenkla
 	NEG bx
-
-f3:	MOV ax, c
-	ADD x
+mod:ADD ax, bx ;2a+|c|
+	JO kl1
+; |c+x|
+f3:	MOV al, c
+	CBW
+	CMP bx, 0
 	JG mod       ; jei c < 0 keicia zenkla
 	NEG bx
+mod: ADD bx, x[si]
+	JO kl1
 
 ;a-x
 cikl:

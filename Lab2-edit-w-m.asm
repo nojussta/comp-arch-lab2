@@ -33,7 +33,7 @@ c_pr:   MOV cx, kiek
         JCXZ pab
 cikl:
 	MOV ax, a
-	SUB ax, x
+	SUB ax, x[si]
 	CMP ax, 0
 	JE f2
 	JL f3 
@@ -72,12 +72,12 @@ f2:	MOV ax, a
 	;bx-ax
 	JO kl1
 	JMP re   
-f3: MOV al, c
-    CBW
-    ADD ax, x[si]
-    JG mod
-    NEG ax
-mod:ADD ax, bx ;2a+|c|
+f3:	MOV al, c
+	CBW
+	CMP bx, 0
+	JG mod       ; jei c < 0 keicia zenkla
+	NEG bx
+mod: ADD ax, x[si]
 	JO kl1
 re:	
 	CMP al, 0
