@@ -33,62 +33,52 @@ c_pr:   MOV cx, kiek
         JCXZ pab
 cikl:
 	MOV ax, a
-	SUB ax, x
-	CMP x[si], ax
-	JE f2
-	JL f3 
-f1: MOV ax, 2
-    IMUL b
-    JO kl1
-    ;2*b
-    XCHG ax, dx
-    MOV ax, a
-    ADD dx, ax
-    ;a+2*b
-    JO kl1
-    MOV bx, x[si]
-    SUB ax, bx
-    JO kl1
+	SUB ax, x[si]
+	CMP a, 0
+f1: MOV bx, a
+	SUB bx, x[si]
 	CMP bx, 0
-	JE kl2	; dalyba is 0   
-	MOV ax, dx
-	CWD 
-	IDIV bx	; ax=rez
-	JMP re  	
+	JE kl2
+	MOV al, b
+	CBW
+	MOV dx, 2
+	IMUL dx ; gali neveikt
+	ADD ax, a
+	CWD
+	IDIV bx
+	JO kl1	
 f2:	MOV ax, a
-	IMUL a
-	JO kl1
-	;a*a
-	MOV ax, dx
-	MOV ax, 3
-	IMUL b
-	JO kl1
-	;3*b
-	SUB dx, ax
-	;dx-ax
-	JO kl1
-	JMP re   
+	IMUL ax
+	MOV bx, ax
+	MOV al, b
+	CBW
+	MOV dx, 3
+	IMUL dx
+	XCHG ax, bx
+	SUB ax, bx   
 f3:	MOV al, c
-    CBW
-	ADD al, c
-	JG mod       ; jei c < 0 keicia zenkla
-	NEG bx
-mod:	ADD ax, bx ;2a+|c|
+	CBW
+	ADD ax, x[si]
+	JG mod
+	NEG ax
+mod: ADD ax, bx ;2a+|c|
 	JO kl1
-re:	
-	CMP al, 0
-	JGE teigr 
-	CMP ah, 0FFh  ; jei neig. rezultatas
-	JE  ger
-	JMP kl3
+re:
+    MOV y[di], ax
+    INC si
+    INC si
+    INC di
+    INC di
+    LOOP cikl
 teigr:  CMP ah, 0     ;jei teig. rezultatas
         JE ger	
 	JMP kl3
 ger:	
     MOV y[di], ax
-	INC si
-	INC si
-	INC di
+    INC si
+    INC si
+    INC di
+    INC di
 	LOOP cikl
 pab:	    
 ;rezultatu isvedimas i ekrana	            

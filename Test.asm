@@ -32,45 +32,41 @@ pr:	MOV ax, duom
 c_pr:   MOV cx, kiek
         JCXZ pab
 cikl:
-	MOV ax, a
-	SUB ax, x
+	MOV al, b
+	CBW   
 	CMP x[si], ax
 	JE f2
 	JL f3 
-f1: MOV ax, 2
-    IMUL b
-    JO kl1
-    ;2*b
-    XCHG ax, dx
-    MOV ax, a
-    ADD dx, ax
-    ;a+2*b
-    JO kl1
-    MOV bx, x[si]
-    SUB ax, bx
-    JO kl1
+f1:	MOV al, c
+    CBW
+	IMUL c	; dx:ax=c^2
+	JO kl1  ; sandauga netilpo i ax 
+	XCHG ax, dx
+	MOV al, b
+	CBW    
+	ADD dx, ax	; c^2+b  
+	JO kl1
+	MOV bx, x[si]
+	SUB bx, ax	; x-b
+	JO kl1
 	CMP bx, 0
 	JE kl2	; dalyba is 0   
 	MOV ax, dx
 	CWD 
 	IDIV bx	; ax=rez
 	JMP re  	
-f2:	MOV ax, a
+f2:	MOV ax, 7
 	IMUL a
+	JO kl1  ; sandauga netilpo i ax 
+	SUB ax, x[si] ;7a-x
 	JO kl1
-	;a*a
-	MOV ax, dx
-	MOV ax, 3
-	IMUL b
-	JO kl1
-	;3*b
-	SUB dx, ax
-	;dx-ax
-	JO kl1
-	JMP re   
-f3:	MOV al, c
-    CBW
-	ADD al, c
+	JMP re    
+f3:	MOV ax, 2
+	IMUL a
+	JO kl1  ; sandauga netilpo i ax 
+	MOV al, c
+	CBW
+	CMP bx, 0
 	JG mod       ; jei c < 0 keicia zenkla
 	NEG bx
 mod:	ADD ax, bx ;2a+|c|
