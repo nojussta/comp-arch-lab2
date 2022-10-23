@@ -11,7 +11,7 @@ stekas  ENDS
 
 duom    SEGMENT 
 a	DW  2  ;   10000; perpildymo situacijai 
-b	DB -2
+b	DB 2
 c	DB 8
 x	DW -1,-2,-4,12,9,45,6
 kiek	= ($-x)/2
@@ -34,45 +34,49 @@ c_pr:   MOV cx, kiek
 cikl:
 	MOV ax, a
 	SUB ax, x
-	CMP x[si], ax
+	CMP ax, 0
 	JE f2
 	JL f3 
 f1: MOV ax, 2
     IMUL b
     JO kl1
     ;2*b
-    XCHG ax, dx
-    MOV ax, a
-    ADD dx, ax
+    ADD ax, a
+        ;XCHG ax, dx
+        ;MOV ax, a
+        ;ADD dx, ax
     ;a+2*b
     JO kl1
-    MOV bx, x[si]
-    SUB ax, bx
+    PUSH ax
+    MOV ax, a
+    SUB ax, x[si]
     JO kl1
-	CMP bx, 0
-	JE kl2	; dalyba is 0   
-	MOV ax, dx
+	CMP ax, 0
+	JE kl2	; dalyba is 0
+	XCHG ax, bx
+	POP ax   
+	;MOV ax, dx
 	CWD 
 	IDIV bx	; ax=rez
 	JMP re  	
 f2:	MOV ax, a
 	IMUL a
 	JO kl1
+	XCHG ax, bx
 	;a*a
-	MOV ax, dx
 	MOV ax, 3
 	IMUL b
 	JO kl1
 	;3*b
-	SUB dx, ax
-	;dx-ax
+	SUB bx, ax
+	;bx-ax
 	JO kl1
 	JMP re   
-f3:	MOV al, c
-    CBW
-	ADD al, c
-	JG mod       ; jei c < 0 keicia zenkla
-	NEG bx
+f3: mov al, c
+    cbw
+    add ax, x[si]
+    jg mod
+    neg ax
 mod:	ADD ax, bx ;2a+|c|
 	JO kl1
 re:	
