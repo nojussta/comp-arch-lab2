@@ -42,7 +42,7 @@ f1: MOV bx, a
 	MOV al, b
 	CBW
 	MOV dx, 2
-	IMUL dx ; gali neveikt
+	IMUL b ; gali neveikt
 	ADD ax, a
 	CWD
 	IDIV bx
