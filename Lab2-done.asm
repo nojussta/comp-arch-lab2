@@ -10,10 +10,11 @@ stekas  SEGMENT STACK
 stekas  ENDS
 
 duom    SEGMENT 
-a	DW  4  ;   10000; perpildymo situacijai 
-b	DB 3
-c	DB 8
-x	DW -1,-2,-4,12,9,45,6
+a	DW  120  ;   10000; perpildymo situacijai 
+b	DB  50
+c	DB  -127
+x	DW  120
+;x	DW  -250,0,60,119,120,121,127,500
 kiek	= ($-x)/2
 y	DW kiek dup(0AAh)     
 isvb	DB 'x=',6 dup (?), ' y=',6 dup (?), 0Dh, 0Ah, '$'
@@ -39,7 +40,7 @@ cikl:
 	JL f3 
 f1: MOV ax, 2
     IMUL b
-    JO kl1
+    ;JO kl1
     ;2*b
     ADD ax, a
         ;XCHG ax, dx
@@ -58,7 +59,8 @@ f1: MOV ax, 2
 	;MOV ax, dx
 	CWD 
 	IDIV bx	; ax=rez
-	JMP re  	
+	JMP re 
+	;a*a-3b 	
 f2:	MOV ax, a
 	IMUL a
 	JO kl1
@@ -66,28 +68,22 @@ f2:	MOV ax, a
 	;a*a
 	MOV ax, 3
 	IMUL b
-	JO kl1
+	;JO kl1
 	;3*b
 	SUB bx, ax
+	XCHG bx, ax
 	;bx-ax
 	JO kl1
 	JMP re   
-f3:	MOV al, c
-	CBW
-	CMP bx, 0
-	JG mod       ; jei c < 0 keicia zenkla
-	NEG bx
-mod: ADD ax, x[si]
+f3: MOV al, c
+    CBW
+    ADD ax, x[si] 
+    CMP ax, 0
+    JG mod
+    NEG ax
+mod:
 	JO kl1
-re:	
-	CMP al, 0
-	JGE teigr 
-	CMP ah, 0FFh  ; jei neig. rezultatas
-	JE  ger
-	JMP kl3
-teigr:  CMP ah, 0     ;jei teig. rezultatas
-        JE ger	
-	JMP kl3
+re:	  
 ger:	
     MOV y[di], ax
 	INC si
@@ -109,7 +105,7 @@ is_cikl:
 	PUSH bx
 	CALL binasc
 	MOV ax, y[di]
-	CBW		; isvedamas skaicius y yra ax reg. 
+	;CBW		; isvedamas skaicius y yra ax reg. 
 	PUSH ax
 	MOV bx, offset isvb+11 
 	PUSH bx
