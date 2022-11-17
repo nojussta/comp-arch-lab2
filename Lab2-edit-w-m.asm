@@ -27,8 +27,8 @@ prog    SEGMENT
 	assume ss:stekas, ds:duom, cs:prog
 pr:	MOV ax, duom
 	MOV ds, ax
-	XOR si, si      ; (suma mod 2) si = 0
-	XOR di, di      ; di = 0
+	XOR si, si     
+	XOR di, di     
 c_pr:   MOV cx, kiek
         JCXZ pab
 cikl:
